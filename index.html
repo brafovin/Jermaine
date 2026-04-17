@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Huggy's Factory – Horror Toy Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="overlay" class="screen active">
+    <div class="screen-content">
+      <h1 class="title">HUGGY'S FACTORY</h1>
+      <p class="subtitle">Finde alle <span id="total-stars"></span> Sterne und entkomme der Fabrik</p>
+      <div class="controls-info">
+        <p><kbd>W A S D</kbd> Bewegen</p>
+        <p><kbd>Maus</kbd> Umsehen</p>
+        <p><kbd>Shift</kbd> Rennen</p>
+      </div>
+      <button id="start-btn" class="btn">SPIEL STARTEN</button>
+    </div>
+  </div>
+
+  <div id="gameover-screen" class="screen">
+    <div class="screen-content">
+      <h1 class="title red">ERWISCHT!</h1>
+      <p class="subtitle">Huggy Wuggy hat dich gefangen...</p>
+      <button id="retry-btn" class="btn">NOCHMAL VERSUCHEN</button>
+    </div>
+  </div>
+
+  <div id="win-screen" class="screen">
+    <div class="screen-content">
+      <h1 class="title green">ENTKOMMEN!</h1>
+      <p class="subtitle">Du hast alle Sterne gesammelt und bist entkommen!</p>
+      <button id="win-retry-btn" class="btn">NOCHMAL SPIELEN</button>
+    </div>
+  </div>
+
+  <div id="hud">
+    <div id="star-counter">⭐ <span id="stars-collected">0</span> / <span id="stars-total">0</span></div>
+    <div id="status-msg"></div>
+    <div id="crosshair">+</div>
+    <div id="health-bar-wrap"><div id="health-bar"></div></div>
+    <div id="alert-flash"></div>
+  </div>
+
+  <canvas id="game-canvas"></canvas>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
