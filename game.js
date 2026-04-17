@@ -130,6 +130,8 @@ let   starMeshes = [];
 let   exitMesh;
 let   exitLight;
 let   ambientFlicker = 0;
+let   flashlight;      // bright point light that follows the camera
+let   flashSpot;       // forward-facing spotlight (flashlight cone)
 
 // ─────────────────────────────────────────
 //  Init
@@ -138,7 +140,7 @@ function init() {
   // Scene
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0a0006);
-  scene.fog = new THREE.FogExp2(0x0a0006, 0.045);
+  scene.fog = new THREE.FogExp2(0x0a0006, 0.025);
 
   // Camera
   camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 120);
@@ -220,8 +222,17 @@ function buildLevel() {
     scene.add(lamp);
   });
 
-  // Ambient
-  scene.add(new THREE.AmbientLight(0x110011, 0.4));
+  // Ambient – brighter so the player can always see the world
+  scene.add(new THREE.AmbientLight(0x443355, 0.9));
+
+  // Flashlight: strong point light + forward spotlight
+  flashlight = new THREE.PointLight(0xffeecc, 1.4, 14, 1.2);
+  scene.add(flashlight);
+
+  flashSpot = new THREE.SpotLight(0xffffff, 1.6, 26, Math.PI / 5, 0.45, 1.2);
+  flashSpot.target = new THREE.Object3D();
+  scene.add(flashSpot);
+  scene.add(flashSpot.target);
 
   // Decorative props (toy boxes)
   addProps();
@@ -446,6 +457,15 @@ function movePlayer(dt) {
   playerPos.y = PLAYER_H;
   camera.position.copy(playerPos);
   camera.rotation.set(pitch, yaw, 0, 'YXZ');
+
+  // keep flashlight glued to the camera
+  if (flashlight) flashlight.position.copy(camera.position);
+  if (flashSpot) {
+    flashSpot.position.copy(camera.position);
+    const dir = new THREE.Vector3();
+    camera.getWorldDirection(dir);
+    flashSpot.target.position.copy(camera.position).add(dir.multiplyScalar(5));
+  }
 }
 
 // ─────────────────────────────────────────
