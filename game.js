@@ -213,10 +213,11 @@ function buildLevel() {
     const light = new THREE.PointLight(0x5500aa, 0.8, 12);
     light.position.set(col * TILE + TILE / 2, WALL_H - 0.3, row * TILE + TILE / 2);
     scene.add(light);
-    // small lamp geometry
     const lampGeo = new THREE.SphereGeometry(0.15, 6, 6);
     const lampMat = new THREE.MeshBasicMaterial({ color: 0xaa55ff });
-    scene.add(new THREE.Mesh(lampGeo, lampMat)).position.copy(light.position);
+    const lamp = new THREE.Mesh(lampGeo, lampMat);
+    lamp.position.copy(light.position);
+    scene.add(lamp);
   });
 
   // Ambient
@@ -302,12 +303,15 @@ function spawnExit() {
 function buildHuggyMesh() {
   const group = new THREE.Group();
 
-  // Body
-  const bodyGeo = new THREE.CapsuleGeometry(0.45, 1.4, 6, 12);
+  // Body (cylinder + sphere caps as capsule substitute for r128)
   const bodyMat = new THREE.MeshLambertMaterial({ color: 0x1155cc });
-  const body = new THREE.Mesh(bodyGeo, bodyMat);
-  body.position.y = 1.5;
-  group.add(body);
+  const bodyTube = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 1.4, 12), bodyMat);
+  bodyTube.position.y = 1.5;
+  group.add(bodyTube);
+  const bodyCap1 = new THREE.Mesh(new THREE.SphereGeometry(0.45, 10, 6), bodyMat);
+  bodyCap1.position.y = 2.2; group.add(bodyCap1);
+  const bodyCap2 = new THREE.Mesh(new THREE.SphereGeometry(0.45, 10, 6), bodyMat);
+  bodyCap2.position.y = 0.8; group.add(bodyCap2);
 
   // Head
   const headGeo = new THREE.SphereGeometry(0.5, 10, 10);
@@ -338,8 +342,8 @@ function buildHuggyMesh() {
   group.add(mouth);
 
   // Arms
-  const armGeo = new THREE.CapsuleGeometry(0.15, 1.2, 5, 8);
   const armMat = new THREE.MeshLambertMaterial({ color: 0x1155cc });
+  const armGeo = new THREE.CylinderGeometry(0.15, 0.15, 1.2, 8);
   [-0.75, 0.75].forEach((xOff, i) => {
     const arm = new THREE.Mesh(armGeo, armMat);
     arm.position.set(xOff, 1.8, 0);
@@ -348,7 +352,7 @@ function buildHuggyMesh() {
   });
 
   // Legs
-  const legGeo = new THREE.CapsuleGeometry(0.18, 0.9, 5, 8);
+  const legGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.9, 8);
   [-0.25, 0.25].forEach(xOff => {
     const leg = new THREE.Mesh(legGeo, armMat);
     leg.position.set(xOff, 0.3, 0);
